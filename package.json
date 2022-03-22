@@ -1,0 +1,38 @@
+{
+  "type": "module",
+  "name": "meu_week2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node models.js && node --experimental-json-modules swagger.js && nodemon --experimental-json-modules app.js ",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "swagger-autogen": ""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@sequelize/core": "^7.0.0-alpha.10",
+    "bcrypt": "^5.0.1",
+    "cookie-parser": "^1.4.6",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "jsonwebtoken": "^8.5.1",
+    "lowdb": "^3.0.0",
+    "mailgun-js": "^0.22.0",
+    "nodemailer": "^6.7.2",
+    "nodemon": "^2.0.15",
+    "pg": "^8.7.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.17.0",
+    "sequelize-auto": "^0.8.8",
+    "swagger-autogen": "^2.20.3",
+    "swagger-jsdoc": "^6.1.0",
+    "swagger-ui-express": "^4.3.0"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.4.1"
+  }
+}
