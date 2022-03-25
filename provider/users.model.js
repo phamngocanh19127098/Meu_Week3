@@ -1,10 +1,15 @@
 import initModels from "../models/init-models.js";
 import database from "../config/database.js";
+import { Op } from "sequelize";
+import handle from "../handleData/handle.js";
+
 const models = initModels(database);
 export default {
     async findAllUser(offset, size){
+        handle.handleFilter("verified@=0,name=!nam"); 
+        console.log(handle.condition);
         const users= await models.userTable.findAll({offset: offset, limit: size});
-      
+        
         for(var i = 0 ;i<users.length;i++){
             delete users[i].dataValues.password;
         }
@@ -30,9 +35,10 @@ export default {
         await models.userRole.create({id:id,role: role})
     },
     async findUserById(id){
+      
         const user = await models.userTable.findAll({
             where:{
-                id:id,
+                id:id
             }
         });
         return user;
