@@ -1,18 +1,30 @@
 import initModels from "../models/init-models.js";
 import database from "../config/database.js";
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 import handle from "../handleData/handle.js";
 
 const models = initModels(database);
 export default {
-    async findAllUser(offset, size){
-        handle.handleFilter("verified@=0,name=!nam"); 
-        console.log(handle.condition);
-        const users= await models.userTable.findAll({offset: offset, limit: size});
+    async findAllUser(offset, size,filter){
+        let users = [];
+        if(filter.length!=0){
+            handle.handleFilter(filter); 
+           // "(email|name)==0"
+           //,{offset: offset, limit: size}
+           console.log(handle.condition);
+             users= await models.userTable.findAll(
+                 {where:handle.condition,offset: offset, limit: size},
+            
+                );
+        }
+        else {
+            users= await models.userTable.findAll({offset: offset, limit: size});
+        }
         
         for(var i = 0 ;i<users.length;i++){
             delete users[i].dataValues.password;
         }
+        //handle.condition={};
         return users;
     },
     async findUserByEmail(email){

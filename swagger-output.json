@@ -37,6 +37,11 @@
             "type": "string"
           },
           {
+            "name": "filter",
+            "in": "query",
+            "type": "string"
+          },
+          {
             "name": "authorization",
             "in": "header",
             "type": "string"

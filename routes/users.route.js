@@ -25,8 +25,9 @@ router.get("/", authenticateToken, async (req, res) => {
     
     const page = req.query.page || 1;
     const size = req.query.size || 5;
+    const filter = req.query.filter||'';
     const offset = (page - 1) * size;
-    const users = await model.findAllUser(offset, size);
+    const users = await model.findAllUser(offset, size,filter);
    // users
    let nPages =  parseInt(users.length/size);
    if(users.length%size!=0){
