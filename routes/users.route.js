@@ -17,10 +17,11 @@ let transporter = nodemailer.createTransport({
 });
 
 router.get("/", authenticateToken, async (req, res) => {
-  // #swagger.description = 'Get all users (Bearer+space+access token to authorize)'
+  // #swagger.description = 'Get all users (Bearer+space+access token to authorize) '
   /* #swagger.security = [{
               "bearerAuth": []
         }] */
+   //  #swagger.parameters['filter'] = { description: 'testcase: (email|name)@=h,verified@=0 \n email==npham4533@gmail.com,verified@=0' }
   try {
     
     const page = req.query.page || 1;

@@ -24,7 +24,7 @@
   "paths": {
     "/api/users/": {
       "get": {
-        "description": "Get all users (Bearer+space+access token to authorize)",
+        "description": "Get all users (Bearer+space+access token to authorize) ",
         "parameters": [
           {
             "name": "page",
@@ -38,6 +38,7 @@
           },
           {
             "name": "filter",
+            "description": "testcase: (email|name)@=h,verified@=0 \n email==npham4533@gmail.com,verified@=0",
             "in": "query",
             "type": "string"
           },
