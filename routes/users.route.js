@@ -7,7 +7,7 @@ dotenv.config();
 const router = express.Router();
 import bcrypt from "bcrypt";
 import model from "../provider/users.model.js";
-
+import templatAPI from '../utils/template.API.js'
 let transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -29,29 +29,35 @@ router.get("/", authenticateToken, async (req, res) => {
     const filter = req.query.filter||'';
     const offset = (page - 1) * size;
     const users = await model.findAllUser(offset, size,filter);
-   // users
+
    const alluser = await model.getAllUser();
-   //console.log(alluser);
+
    let nPages =  parseInt(alluser.length/size);
    if(alluser.length%size!=0){
      nPages++;
    }
-    return res.json({
-      message:"Get all users successful",
-      responeData:{
-        count:users.length,
-        rows:users,
-        totalPages:nPages,
-        currentPage:page
-      },
-      timeStamp:new Date()
-              .toISOString()
-              .replace(/T/,' ')
-              .replace(/\..+/,''),
-      violations:"",
-    });
+    var message = "Get all users success"
+      var status = "Success"
+      var data = {
+            count:users.length,
+            rows:users,
+            totalPages:nPages,
+            currentPage:page
+          }
+      var error ="";
+    return res.json(
+      templatAPI.configTemplateAPI(message,status,data,error)
+   
+    );
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    var message = ""
+      var status = "Fail"
+      var data = ""
+      
+    res.status(500).json(
+      
+      templatAPI.configTemplateAPI(message,status,data,error.message)
+      );
   }
 });
 
@@ -67,45 +73,39 @@ router.post("/register", async (req, res) => {
       const newUser = await model.findUserByEmail(email);
 
       await model.addNewUserRole(newUser[0].id, "Normal");
-      let message = {
+      let Message = {
         from: "pnanh19@clc.fitus.edu.vn",
         to: newUser[0].email,
         subject: "Comfirm your email",
         html: `<p>Verify your mail here http://localhost:3000/api/users/verify/${newUser[0].id}</p>`,
       };
-      transporter.sendMail(message);
-      res.status(200).json({
-        message: "Please comfirm your mail",
-        responeData: "",
-        status: "Success",
-        timeStamp: new Date()
-          .toISOString()
-          .replace(/T/, " ")
-          .replace(/\..+/, ""),
-        violations: "",
-      });
+      transporter.sendMail(Message);
+      var message = "Please comfirm your mail"
+      var status = "Success"
+      var data = ""
+      var error ="";
+      res.status(200).json(
+        templatAPI.configTemplateAPI(message,status,data,error)
+      );
     } else
-      res.status(400).json({
-        message: "Email already exists",
-        responeData: "",
-        status: "Fail",
-        timeStamp: new Date()
-          .toISOString()
-          .replace(/T/, " ")
-          .replace(/\..+/, ""),
-        violations: "",
-      });
+      
+      {
+        var message = "Email already exists"
+        var status = "Fail"
+        var data = ""
+        var error ="";
+        res.status(400).json(
+      templatAPI.configTemplateAPI(message,status,data,error)
+      );
+    }
   } catch (error) {
-    res.status(400).json({
-      message: "",
-      responeData: "",
-      status: "Fail",
-      timeStamp: new Date()
-      .toISOString()
-      .replace(/T/, " ")
-      .replace(/\..+/, ""),
-      violations: error.message,
-    });
+    var message = ""
+    var status = "Fail"
+    var data = ""
+    var error = error.message;
+    res.status(400).json(
+    templatAPI.configTemplateAPI(message,status,data,error)
+    );
   }
 });
 
@@ -119,50 +119,41 @@ router.get("/verify/:user_id", async (req, res) => {
     const user = await model.findUserById(id);
 
     if (user.length === 0) {
-      return res.status(404).json({ 
-        message: "User does not exist",
-        responeData: "",
-        status: "Fail",
-        timeStamp: new Date()
-        .toISOString()
-        .replace(/T/, " ")
-        .replace(/\..+/, ""),
-        violations:"",
-
-       });
+        var message = "User does not exist"
+        var status = "Fail"
+        var data = ""
+        var error ="";
+      return res.status(404).json(
+      templatAPI.configTemplateAPI(message,status,data,error)
+       );
     } else if (user[0].verified === "0") {
       await model.updateUserStatus(id);
-      return res.status(200).json({
-        message: "Verify Success",
-        responeData: "",
-        status: "Success",
-        timeStamp: new Date()
-        .toISOString()
-        .replace(/T/, " ")
-        .replace(/\..+/, ""),
-        violations: "",
-        });
-    } else return res.status(400).json({ 
-      message: "This account is verified",
-        responeData: "",
-        status: "Fail",
-        timeStamp: new Date()
-        .toISOString()
-        .replace(/T/, " ")
-        .replace(/\..+/, ""),
-        violations: "", 
-    });
+      var message = "Verify Success"
+      var status = "Success"
+      var data = ""
+      var error ="";
+      return res.status(200).json(
+        templatAPI.configTemplateAPI(message,status,data,error)
+        );
+    } else {
+      var message = "This account is verified"
+      var status = "Fail"
+      var data = ""
+      var error ="";
+      return res.status(400).json(
+    templatAPI.configTemplateAPI(message,status,data,error)
+    );
+  }
   } catch (error) {
-    res.status(404).json({ 
-        message: "Invalid id",
-        responeData: "",
-        status: "Fail",
-        timeStamp: new Date()
-        .toISOString()
-        .replace(/T/, " ")
-        .replace(/\..+/, ""),
-        violations: error.message,
-     });
+    var message = "Invalid id"
+    var status = "Fail"
+    var data = ""
+    var error ="";
+    res.status(404).json(
+   
+    templatAPI.configTemplateAPI(message,status,data,error)
+     );
+     
   }
 });
 

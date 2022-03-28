@@ -4,6 +4,7 @@ import router from "./users.route.js";
 import { jwtTokens } from "../utils/jwt-heplers.js";
 import model from "../provider/users.model.js";
 import jwt from "jsonwebtoken";
+import templateAPI from "../utils/template.API.js";
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -17,56 +18,49 @@ router.post("/login", async (req, res) => {
     } */
 
     if (users.length === 0) {
-      return res.status(401).json({
-        //error: "Email or password is incorrect"
-        message: "Email or password is incorrect",
-        responeData: "",
-        status: "Fail",
-        timeStamp: new Date()
-          .toISOString()
-          .replace(/T/, " ")
-          .replace(/\..+/, ""),
-        violations: "Email or password is incorrect",
-      });
+      var message = "Email or password is incorrect"
+      var status = "Fail"
+      var data = ""
+      var error ="";
+      return res.status(401).json(
+        templateAPI.configTemplateAPI(message,status,data,error)
+       
+      );
     }
     const validPassword = await bcrypt.compare(password, users[0].password);
     if (!validPassword)
-      return res.status(401).json({
-        //error: "Email or password is incorrect"
-        message: "Email or password is incorrect",
-        responeData: "",
-        status: "Fail",
-        timeStamp: new Date()
-          .toISOString()
-          .replace(/T/, " ")
-          .replace(/\..+/, ""),
-        violations: "Email or password is incorrect",
-      });
+      {
+        var message = "Email or password is incorrect"
+        var status = "Fail"
+        var data = ""
+        var error ="";
+        return res.status(401).json(
+     
+        templateAPI.configTemplateAPI(message,status,data,error)
+      );
+    }
 
     const tokens = jwtTokens(users[0]);
     //  tokens.refreshToken = tokens.refreshToken.split(' ')[1];
     res.cookie("refresh_token", tokens.refreshToken, { httpOnly: true });
-    return res.status(200).json({
-      message: "Login success",
-      responeData: {
-        data: tokens,
-      },
-      status: "Success",
-      timeStamp: new Date().toISOString().replace(/T/, " ").replace(/\..+/, ""),
-      violations: "",
-    });
+    var message = "Login success"
+        var status = "Success"
+        var data = tokens;
+        var error ="";
+    return res.status(200).json(
+
+    templateAPI.configTemplateAPI(message,status,data,error)
+    );
     
   } catch (error) {
-    return res.status(403).json({
-      message: error.message,
-      responeData: "",
-      status: "Fail",
-      timeStamp: new Date()
-        .toISOString()
-        .replace(/T/, " ")
-        .replace(/\..+/, ""),
-      violations: error.message,
-    });
+      var message = ""
+      var status = "Fail"
+      var data = "";
+      var error =error.message;
+    return res.status(403).json(
+    
+    templateAPI.configTemplateAPI(message,status,data,error)
+    );
   }
 });
 router.post("/refresh_token/:token", (req, res) => {
@@ -84,42 +78,32 @@ router.post("/refresh_token/:token", (req, res) => {
         process.env.REFRESH_TOKEN_SECRET,
         (error, user) => {
           if (error) {
-            return res.status(403).json({
-              message: error.message,
-              responeData: "",
-              status: "Fail",
-              timeStamp: new Date()
-                .toISOString()
-                .replace(/T/, " ")
-                .replace(/\..+/, ""),
-              violations: error.message,
-            });
+            var message = ""
+            var status = "Fail"
+            var data = "";
+            var error =error.message;
+            return res.status(403).json(
+            templateAPI.configTemplateAPI(message,status,data,error)
+            );
           }
           let tokens = jwtTokens(user);
           res.cookie("refresh_token", tokens.refreshToken, { httpOnly: true });
-          return res.status(200).json({
-            message: "Refresh tokens success",
-            responeData: {
-              data: tokens,
-            },
-            status: "Success",
-            timeStamp: new Date()
-              .toISOString()
-              .replace(/T/, " ")
-              .replace(/\..+/, ""),
-            violations: "",
-          });
+          var message = "Refresh tokens success"
+          var status = "Success"
+          var data = tokens;
+          var error ="";
+          return res.status(200).json(
+            templateAPI.configTemplateAPI(message,status,data,error)
+          );
         }
       );
     }
   } catch (error) {
-    return res.status(403).json({
-      message: error.message,
-      responeData: "",
-      status: "Fail",
-      timeStamp: new Date().toISOString().replace(/T/, " ").replace(/\..+/, ""),
-      violations: error.message,
-    });
+    var message = ""
+    var status = "Fail"
+    var data = "";
+   // var error =;
+    return res.status(403).json(templateAPI.configTemplateAPI(message,status,data,error.message));
   }
 });
 
