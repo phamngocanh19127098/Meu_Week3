@@ -24,7 +24,7 @@ export default {
         for(var i = 0 ;i<users.length;i++){
             delete users[i].dataValues.password;
         }
-       
+        for (var member in handle.condition) delete handle.condition[member];
         return users;
     },
     async findUserByEmail(email){
