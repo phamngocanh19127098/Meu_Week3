@@ -24,7 +24,7 @@ export default {
         for(var i = 0 ;i<users.length;i++){
             delete users[i].dataValues.password;
         }
-        //handle.condition={};
+       
         return users;
     },
     async findUserByEmail(email){
@@ -62,6 +62,9 @@ export default {
                     id:id
                 }
             })
+    },
+    async getAllUser(){
+        return await models.userTable.findAll();
     }
 
 }

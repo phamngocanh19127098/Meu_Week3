@@ -30,8 +30,10 @@ router.get("/", authenticateToken, async (req, res) => {
     const offset = (page - 1) * size;
     const users = await model.findAllUser(offset, size,filter);
    // users
-   let nPages =  parseInt(users.length/size);
-   if(users.length%size!=0){
+   const alluser = await model.getAllUser();
+   //console.log(alluser);
+   let nPages =  parseInt(alluser.length/size);
+   if(alluser.length%size!=0){
      nPages++;
    }
     return res.json({

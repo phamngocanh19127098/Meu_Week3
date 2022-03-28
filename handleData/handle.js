@@ -99,7 +99,21 @@ function handleFilter(filter) {
 function handleOperator(ar1, ar2, operator) {
   switch (operator) {
     case "@=":
-      condition[ar1] = { [Op.substring]: ar2 };
+      if(ar2<'A'||ar2>'z'){
+        //console.log("Normal");
+        condition[ar1] = {[Op.substring]: ar2};
+      }
+      else if(ar2 === ar2.toLowerCase())
+      //[Op.substring]: ar2
+      {
+      //  console.log("LowerCase");
+        condition[ar1] = { [Op.or]:{[Op.substring]: ar2,[Op.substring]: ar2.toUpperCase()} };
+      }
+      else if (ar2 === ar2.toUpperCase()) {
+       // console.log("UpperCase");
+        condition[ar1] = { [Op.or]:{[Op.substring]: ar2,[Op.substring]: ar2.toLowerCase()} };
+      }
+
       break;
     case "!=":
       condition[ar1] = { [Op.ne]: ar2 };
@@ -128,14 +142,52 @@ function handleOperator(ar1, ar2, operator) {
 function handleOperatorSpecial(ar1, ar2, arResult, operator) {
   switch (operator) {
     case "@=":
+      if(arResult<'A'||arResult>'z'){
+        
+        condition[Op.or] = [
+          {
+            [ar1]: {
+              [Op.substring]: arResult,
+            },
+          },
+          { [ar2]: 
+            { [Op.substring]: arResult }
+           },
+        ];
+      }
+      else if(arResult === arResult.toLowerCase())  
+      {
+        console.log("LowerCase");
       condition[Op.or] = [
         {
+          //[Op.substring]: arResult,
+         // [Op.substring]: arResult.toUpperCase()
           [ar1]: {
-            [Op.substring]: arResult,
+            [Op.or]:[{[Op.substring]: arResult},{[Op.substring]: arResult.toUpperCase()}]
           },
         },
-        { [ar2]: { [Op.substring]: arResult } },
+        { [ar2]: 
+          { 
+            [Op.or]:[{[Op.substring]: arResult},{[Op.substring]: arResult.toUpperCase()}]
+           }
+         },
       ];
+      }
+      else if (arResult === arResult.toUpperCase()) {
+        console.log("UpperCase");
+       condition[Op.or] = [
+        {
+          [ar1]: {
+            [Op.or]:[{[Op.substring]: arResult},{[Op.substring]: arResult.toLowerCase()}]
+          },
+        },
+        { [ar2]: 
+          { 
+            [Op.or]:[{[Op.substring]: arResult},{[Op.substring]: arResult.toLowerCase()}]
+           }
+         },
+      ];
+      }
       break;
     case "!=":
       condition[Op.or] = [
