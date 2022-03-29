@@ -19,11 +19,9 @@ router.post("/login", async (req, res) => {
 
     if (users.length === 0) {
       var message = "Email or password is incorrect"
-      var status = "Fail"
-      var data = ""
-      var error ="";
+      var data = null;
       return res.status(401).json(
-        templateAPI.configTemplateAPI(message,status,data,error)
+        templateAPI.configTemplateAPI(message,data)
        
       );
     }
@@ -31,12 +29,10 @@ router.post("/login", async (req, res) => {
     if (!validPassword)
       {
         var message = "Email or password is incorrect"
-        var status = "Fail"
-        var data = ""
-        var error ="";
+        var data = null;
         return res.status(401).json(
      
-        templateAPI.configTemplateAPI(message,status,data,error)
+        templateAPI.configTemplateAPI(message,data)
       );
     }
 
@@ -44,22 +40,14 @@ router.post("/login", async (req, res) => {
     //  tokens.refreshToken = tokens.refreshToken.split(' ')[1];
     res.cookie("refresh_token", tokens.refreshToken, { httpOnly: true });
     var message = "Login success"
-        var status = "Success"
-        var data = tokens;
-        var error ="";
+    var data = tokens;
     return res.status(200).json(
-
-    templateAPI.configTemplateAPI(message,status,data,error)
+    templateAPI.configTemplateAPI(message,data)
     );
     
-  } catch (error) {
-      var message = ""
-      var status = "Fail"
-      var data = "";
-      var error =error.message;
+  } catch (error) { 
     return res.status(403).json(
-    
-    templateAPI.configTemplateAPI(message,status,data,error)
+    templateAPI.configTemplateAPIError(error)
     );
   }
 });
@@ -78,22 +66,19 @@ router.post("/refresh_token/:token", (req, res) => {
         process.env.REFRESH_TOKEN_SECRET,
         (error, user) => {
           if (error) {
-            var message = ""
-            var status = "Fail"
-            var data = "";
-            var error =error.message;
+           
             return res.status(403).json(
-            templateAPI.configTemplateAPI(message,status,data,error)
+            templateAPI.configTemplateAPIError(error)
             );
           }
           let tokens = jwtTokens(user);
           res.cookie("refresh_token", tokens.refreshToken, { httpOnly: true });
           var message = "Refresh tokens success"
-          var status = "Success"
+         
           var data = tokens;
-          var error ="";
+         
           return res.status(200).json(
-            templateAPI.configTemplateAPI(message,status,data,error)
+            templateAPI.configTemplateAPI(message,data)
           );
         }
       );
@@ -103,7 +88,7 @@ router.post("/refresh_token/:token", (req, res) => {
     var status = "Fail"
     var data = "";
    // var error =;
-    return res.status(403).json(templateAPI.configTemplateAPI(message,status,data,error.message));
+    return res.status(403).json(templateAPI.configTemplateAPIError(error));
   }
 });
 
@@ -111,21 +96,11 @@ router.delete("/refresh_token", (req, res) => {
   // #swagger.description = 'Delete refresh token from cookie'
   try {
     res.clearCookie("refresh_token");
-    return res.status(200).json({ 
-      message: "Delete refresh tokens successful",
-      responeData: "",
-      status: "Success",
-      timeStamp: new Date().toISOString().replace(/T/, " ").replace(/\..+/, ""),
-      violations: "",
-     });
+    var message = "Delete refresh tokens successful"
+    var data = "";
+    return res.status(200).json();
   } catch (error) {
-    return res.status(401).json({ 
-      message: error.message,
-      responeData: "",
-      status: "Fail",
-      timeStamp: new Date().toISOString().replace(/T/, " ").replace(/\..+/, ""),
-      violations: error.message,
-     });
+    return res.status(401).json(templateAPI.configTemplateAPI(message,data));
   }
 });
 export default router;

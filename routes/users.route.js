@@ -37,26 +37,26 @@ router.get("/", authenticateToken, async (req, res) => {
      nPages++;
    }
     var message = "Get all users success"
-      var status = "Success"
+     
       var data = {
             count:users.length,
             rows:users,
             totalPages:nPages,
             currentPage:page
           }
-      var error ="";
+
     return res.json(
-      templatAPI.configTemplateAPI(message,status,data,error)
+      templatAPI.configTemplateAPI(message,data)
    
     );
   } catch (error) {
-    var message = ""
-      var status = "Fail"
-      var data = ""
+    
+     
+     
       
     res.status(500).json(
       
-      templatAPI.configTemplateAPI(message,status,data,error.message)
+      templatAPI.configTemplateAPIError(error)
       );
   }
 });
@@ -81,30 +81,25 @@ router.post("/register", async (req, res) => {
       };
       transporter.sendMail(Message);
       var message = "Please comfirm your mail"
-      var status = "Success"
+      
       var data = ""
-      var error ="";
+     
       res.status(200).json(
-        templatAPI.configTemplateAPI(message,status,data,error)
+        templatAPI.configTemplateAPI(message,data)
       );
     } else
       
       {
         var message = "Email already exists"
-        var status = "Fail"
-        var data = ""
-        var error ="";
+        var data = null
         res.status(400).json(
-      templatAPI.configTemplateAPI(message,status,data,error)
+      templatAPI.configTemplateAPI(message,data)
       );
     }
   } catch (error) {
-    var message = ""
-    var status = "Fail"
-    var data = ""
-    var error = error.message;
+    
     res.status(400).json(
-    templatAPI.configTemplateAPI(message,status,data,error)
+    templatAPI.configTemplateAPIError(error)
     );
   }
 });
@@ -120,38 +115,34 @@ router.get("/verify/:user_id", async (req, res) => {
 
     if (user.length === 0) {
         var message = "User does not exist"
-        var status = "Fail"
-        var data = ""
-        var error ="";
+       
+        var data = null;
+      
       return res.status(404).json(
-      templatAPI.configTemplateAPI(message,status,data,error)
+      templatAPI.configTemplateAPI(message,data)
        );
     } else if (user[0].verified === "0") {
       await model.updateUserStatus(id);
       var message = "Verify Success"
-      var status = "Success"
       var data = ""
-      var error ="";
+
       return res.status(200).json(
-        templatAPI.configTemplateAPI(message,status,data,error)
+        templatAPI.configTemplateAPI(message,data)
         );
     } else {
       var message = "This account is verified"
-      var status = "Fail"
-      var data = ""
-      var error ="";
+      
+      var data = null
+      
       return res.status(400).json(
-    templatAPI.configTemplateAPI(message,status,data,error)
+    templatAPI.configTemplateAPI(message,data)
     );
   }
   } catch (error) {
-    var message = "Invalid id"
-    var status = "Fail"
-    var data = ""
-    var error ="";
+   
     res.status(404).json(
    
-    templatAPI.configTemplateAPI(message,status,data,error)
+    templatAPI.configTemplateAPIError(error)
      );
      
   }
